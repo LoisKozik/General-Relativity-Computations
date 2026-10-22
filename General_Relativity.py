@@ -43,8 +43,15 @@ k_constant = 8*np.pi*G_constant/c_constant**4 #m/J
 def R_s(m):
     return 2*G*m/c_constant**2
 
-def Subs(expr):
-    return smp.simplify(expr).subs([ (smp.diff(a(t),t,2), a_Dot(t)) , (smp.diff(a(t),t), a_dot(t)) ])
+def Sub(M, Lsub): #M is a matrix
+    Msub = smp.MutableDenseNDimArray(np.zeros(list(M.shape), dtype=int))
+    for comb in product(tuple(range(4)), repeat=len(M.shape)):
+        if M[comb] != 0:
+            Msub[comb] = smp.simplify(M[comb]).subs(Lsub)
+    return Msub
+
+def sub(expr, Lsub):
+    return smp.simplify(expr).subs(Lsub)
 
 #########################################################################################################################################
 #                                                           METRICS                                                                     #
