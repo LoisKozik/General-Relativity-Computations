@@ -24,3 +24,9 @@ This script verifies that the Schwarzschild metric is a valid solution to the Ei
 The Schwarszchild Metric is given by :
 
 $$\mathrm{d} s^{2}=-\left(1-{\frac {2GM}{c^{2}r}}\right)c^{2}\mathrm {d} t^{2}+{\frac {\mathrm {d} r^{2}}{1-{\frac {2GM}{c^{2}r}}}}+r^{2}\left(\mathrm {d} \theta ^{2}+\sin ^{2}\theta \ \mathrm {d} \phi ^{2}\right)$$
+
+### Project 3 : Geodesics Equations for the Reissner–Nordström metric
+
+This script derives the equations of motion in the Reissner–Nordström metric by using the geodesics equations, which are (for $\mu \in \set{0,1,2,3}$): 
+
+$${\displaystyle {d^{2}x^{\mu } \over ds^{2}}+\Gamma ^{\mu }{}_{\alpha \beta }{dx^{\alpha } \over ds}{dx^{\beta } \over ds}=0\ }$$
