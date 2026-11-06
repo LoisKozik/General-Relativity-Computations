@@ -1,7 +1,7 @@
 import numpy as np
 import sympy as smp
 from sympy import *
-from IPython.display import display, Latex
+from IPython.display import display, Latex, Math
 import matplotlib.pyplot as plt
 #import plotly.graph_objs as go
 
@@ -11,7 +11,7 @@ plt.rcParams.update({
     "axes.facecolor": '#373e4b',
 })
 
-G, M, t, r, theta, phi, k, c = smp.symbols('G M t r θ Φ k c', nonzero=True, real=True, positive=True)
+G, M, t, r, theta, phi, k, c, s, epsilon = smp.symbols('G M t r θ Φ k c s varepsilon_0', nonzero=True, real=True, positive=True)
 a = smp.Function('a')
 a_dot = smp.Function('ȧ')
 a_dot = smp.Function('ȧ')
@@ -40,6 +40,16 @@ H0_constant = 73,3 #km/s/Mpc
 #Cosmological_constant = 
 k_constant = 8*np.pi*G_constant/c_constant**4 #m/J
 
+# New symbols are defined to make the expressions more concise
+t_dot, r_dot, theta_dot, phi_dot  = smp.symbols("\\dot{t} \\dot{r} \\dot{\\theta} \\dot{\\phi}")
+t_ddot, r_ddot, theta_ddot, phi_ddot  = smp.symbols("\\ddot{t} \\ddot{r} \\ddot{\\theta} \\ddot{\\phi}")
+
+# The list for all the substitutions
+L_points = [(smp.Derivative(t,s,2), t_ddot), (smp.Derivative(r,s,2), r_ddot), (smp.Derivative(theta,s,2), theta_ddot), (smp.Derivative(phi,s,2), phi_ddot),
+            (smp.Derivative(t,s), t_dot), (smp.Derivative(r,s), r_dot), (smp.Derivative(theta,s), theta_dot), (smp.Derivative(phi,s), phi_dot)]
+
+L_constants = [(G, 1), (epsilon, 1), (c, 1), (4*smp.pi, 1)]
+
 def R_s(m):
     return 2*G*m/c_constant**2
 
@@ -52,6 +62,10 @@ def Sub(M, Lsub): #M is a matrix
 
 def sub(expr, Lsub):
     return smp.simplify(expr).subs(Lsub)
+
+def Subs(expr):
+    return smp.simplify(expr).subs([ (smp.diff(a(t),t,2), a_Dot(t)) , (smp.diff(a(t),t), a_dot(t)) ])
+
 
 #########################################################################################################################################
 #                                                           METRICS                                                                     #
@@ -220,6 +234,16 @@ def Display_Ricci_Scalar(Metric, R=None):
         R_tensor = Riemann_Tensor(Metric)
     Scal = Ricci_Scalar(Metric,R_tensor)
     display(Latex('$' + latex(Riemann) + ' = ' + latex(Subs(Scal)) + '$'))
+
+
+def Display_Geodesics(Christoffel, L_sub):
+    for l in range(4):
+        S = 0
+        for i in range(4):
+            for j in range(4):
+                S += Christoffel[l,i,j] * smp.diff(Rav[i], s, evaluate=False) * smp.diff(Rav[j], s, evaluate=False)
+        S += smp.diff(Rav[l], s, 2, evaluate=False)
+        display(Math('$' + latex(0) + ' = ' + latex(S.subs(L_sub)) + '$'))
 
 #########################################################################################################################################
 #                                                          Trajectory                                                                   #
